@@ -1,6 +1,5 @@
-package de.skyslycer.hmclink.common.messages.main
+package de.skyslycer.hmclink.common.messages.link
 
-import de.skyslycer.hmclink.common.data.Code
 import de.skyslycer.hmclink.common.messages.Message
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -9,10 +8,9 @@ import java.util.*
 
 @ExperimentalSerializationApi
 @Serializable
-class LinkAnswerMessage(
+class LinkErrorMessage(
     override val from: String,
     override val to: String,
     @Contextual val player: UUID,
-    val playerName: String,
-    val code: Code?
+    val playerName: String
 ) : Message()

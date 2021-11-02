@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    api(kotlin("stdlib"))
+    compileOnly(kotlin("stdlib"))
 
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 

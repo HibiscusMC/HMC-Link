@@ -1,0 +1,11 @@
+name: '${name}'
+version: '${version}'
+author: 'Skyslycer'
+description: 'The Minecraft part of the HMC Link messaging system'
+
+main: 'de.skyslycer.hmclink.plugin.HMCLinkPlugin'
+
+api-version: '1.17'
+
+softdepend:
+  - 'PlaceholderAPI'

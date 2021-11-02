@@ -6,18 +6,23 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import redis.clients.jedis.HostAndPort
 import redis.clients.jedis.Jedis
 import java.util.*
+import kotlin.collections.HashSet
+import kotlin.jvm.Throws
 
 @ExperimentalSerializationApi
-class MessageHandler(private val serviceType: String, private val host: String, private val port: Int) {
+class MessageHandler(val serviceType: String, private val host: String, private val port: Int) {
 
     lateinit var jedis: Jedis
     lateinit var pubSubHelper: PubSubHelper
+
+    val onlineServices = HashSet<String>()
 
     /**
      * Try to connect to Redis.
      *
      * @return The exception when applicable
      */
+    @Throws(Throwable::class)
     fun createJedis(): Optional<Throwable> {
         return try {
             jedis = Jedis(
@@ -40,11 +45,16 @@ class MessageHandler(private val serviceType: String, private val host: String, 
 
     private fun aliveListener() {
         pubSubHelper.listenSolo(Channels.ALIVE) { message ->
-            if (message is AliveMessage && message.mode == AliveMessage.AliveMode.REQUEST && message.to == serviceType) {
-                pubSubHelper.publish(
-                    Channels.ALIVE,
-                    AliveMessage(serviceType, message.from, AliveMessage.AliveMode.ANSWER)
-                )
+            if (message is AliveMessage && message.to == serviceType) {
+                when (message.mode) {
+                    AliveMessage.AliveMode.REQUEST -> {
+                        pubSubHelper.publish(
+                            Channels.ALIVE,
+                            AliveMessage(serviceType, message.from, AliveMessage.AliveMode.ANSWER)
+                        )
+                    }
+                    AliveMessage.AliveMode.ANSWER -> onlineServices.add(message.from)
+                }
             }
         }
     }

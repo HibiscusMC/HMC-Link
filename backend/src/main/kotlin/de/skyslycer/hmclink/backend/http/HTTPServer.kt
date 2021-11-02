@@ -7,8 +7,8 @@ import de.skyslycer.hmclink.backend.http.payload.GuildAddPayload
 import de.skyslycer.hmclink.backend.utils.DiscordUtilities
 import de.skyslycer.hmclink.backend.utils.OAuthLinkGeneration
 import de.skyslycer.hmclink.common.ServiceType
-import de.skyslycer.hmclink.common.messages.main.LinkErrorMessage
-import de.skyslycer.hmclink.common.messages.main.LinkSuccessMessage
+import de.skyslycer.hmclink.common.messages.link.LinkErrorMessage
+import de.skyslycer.hmclink.common.messages.link.LinkSuccessMessage
 import de.skyslycer.hmclink.common.redis.Channels
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import io.ktor.application.*

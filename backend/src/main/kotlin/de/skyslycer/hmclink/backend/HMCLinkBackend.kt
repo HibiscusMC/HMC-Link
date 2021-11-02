@@ -2,7 +2,7 @@ package de.skyslycer.hmclink.backend
 
 import de.skyslycer.hmclink.backend.constants.EnvironmentVariables
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
-import de.skyslycer.hmclink.backend.messages.LinkGenerationReceiver
+import de.skyslycer.hmclink.backend.messages.LinkMessageReceiver
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
@@ -26,10 +26,7 @@ class HMCLinkBackend {
         System.getenv(EnvironmentVariables.REDIS_PORT).toInt()
     )
 
-    private val distributor = MessageDistributor(
-        messageHandler,
-        ServiceType.BACKEND
-    )
+    private val distributor = MessageDistributor(messageHandler)
 
     /**
      * A basic method to start the backend.
@@ -54,7 +51,7 @@ class HMCLinkBackend {
         logger.info("Successfully enabled the database!")
 
         logger.info("Setting up message listeners...")
-        LinkGenerationReceiver(distributor, messageHandler)
+        LinkMessageReceiver(distributor, messageHandler)
     }
 
 }

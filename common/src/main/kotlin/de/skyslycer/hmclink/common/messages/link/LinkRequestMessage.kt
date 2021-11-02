@@ -1,4 +1,4 @@
-package de.skyslycer.hmclink.common.messages.main
+package de.skyslycer.hmclink.common.messages.link
 
 import de.skyslycer.hmclink.common.messages.Message
 import kotlinx.serialization.Contextual
@@ -8,10 +8,9 @@ import java.util.*
 
 @ExperimentalSerializationApi
 @Serializable
-class LinkSuccessMessage(
+class LinkRequestMessage(
     override val from: String,
     override val to: String,
     @Contextual val player: UUID,
-    val playerName: String,
-    val discordName: String
+    val playerName: String
 ) : Message()
