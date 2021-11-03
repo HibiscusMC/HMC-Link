@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 class GuildAddPayload(
     val accessToken: String,
     val nick: String,
-    val roles: Array<Long>
+    val roles: LongArray
 )
