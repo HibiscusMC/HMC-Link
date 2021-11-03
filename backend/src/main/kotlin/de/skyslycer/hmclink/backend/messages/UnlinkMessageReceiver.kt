@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
+import mu.KotlinLogging
 import java.util.*
 
 @ExperimentalSerializationApi
@@ -29,6 +30,8 @@ class UnlinkMessageReceiver(
         setup()
     }
 
+    private val logger = KotlinLogging.logger {  }
+
     private val scope = CoroutineScope(Dispatchers.Default)
 
     /**
@@ -39,6 +42,8 @@ class UnlinkMessageReceiver(
     }
 
     private fun handleReceive(message: UnlinkRequestMessage) {
+        logger.info("Received unlink request message! Removing code and notifying the Discord bot. (UUID: ${message.player})")
+
         scope.launch {
             val user = DatabaseHandler.get(message.player)
 
@@ -67,7 +72,7 @@ class UnlinkMessageReceiver(
     private fun sendAnswer(message: UnlinkRequestMessage, successful: Boolean) {
         handler.pubSubHelper.publish(
             Channels.STANDARD,
-            UnlinkAnswerMessage(message.to, message.from, message.player, message.playerName, successful)
+            UnlinkAnswerMessage(message.to, message.from, message.player, message.playerName, message.executor, message.executorName, successful)
         )
     }
 

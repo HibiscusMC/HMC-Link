@@ -1,6 +1,6 @@
 package de.skyslycer.hmclink.backend.database
 
-import de.skyslycer.hmclink.backend.constants.EnvironmentVariables
+import de.skyslycer.hmclink.backend.EnvironmentVariables
 import de.skyslycer.hmclink.backend.database.tables.LinkTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction

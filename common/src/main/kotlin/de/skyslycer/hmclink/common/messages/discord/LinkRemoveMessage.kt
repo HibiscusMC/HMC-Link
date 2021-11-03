@@ -7,5 +7,5 @@ import kotlinx.serialization.ExperimentalSerializationApi
 class LinkRemoveMessage(
     override val from: String,
     override val to: String,
-    id: Long
+    val id: Long
 ) : Message()

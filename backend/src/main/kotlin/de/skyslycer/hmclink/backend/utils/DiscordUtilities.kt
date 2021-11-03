@@ -1,6 +1,6 @@
 package de.skyslycer.hmclink.backend.utils
 
-import de.skyslycer.hmclink.backend.constants.EnvironmentVariables
+import de.skyslycer.hmclink.backend.EnvironmentVariables
 
 class DiscordUtilities {
 

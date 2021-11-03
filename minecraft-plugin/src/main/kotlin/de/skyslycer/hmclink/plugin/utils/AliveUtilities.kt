@@ -4,9 +4,9 @@ import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.messages.checks.AliveMessage
 import de.skyslycer.hmclink.common.redis.Channels
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
-import de.skyslycer.hmclink.plugin.config.Messages
-import de.skyslycer.hmclink.plugin.config.Replacement
-import de.skyslycer.hmclink.plugin.config.sendParsedMessage
+import de.skyslycer.hmclink.plugin.chat.Messages
+import de.skyslycer.hmclink.plugin.chat.Replacement
+import de.skyslycer.hmclink.plugin.chat.sendParsedMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -17,9 +17,17 @@ import kotlin.time.ExperimentalTime
 
 class AliveUtilities {
 
-    @ExperimentalTime
     @ExperimentalSerializationApi
     companion object {
+        /**
+         * Wait for the backend to respond and execute an executor if the backend responds.
+         *
+         * @param time The time in seconds to wait for a response from the backend
+         * @param distributor The distributor
+         * @param scope The scope to wait in
+         * @param player The player for the executor
+         * @param executor The executor that is executed when the backend responds
+         */
         fun onAliveInTime(time: Int, distributor: MessageDistributor, scope: CoroutineScope, player: Player, executor: (Player) -> Unit) {
             scope.launch {
                 var alive = false
@@ -43,7 +51,7 @@ class AliveUtilities {
                     }
                 }, true)
 
-                delay(Duration.seconds(time))
+                delay(time * 1000.toLong())
 
                 if (!alive) {
                     player.sendParsedMessage(Messages.SERVICE_UNAVAILABLE, Replacement("service", ServiceType.BACKEND))

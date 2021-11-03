@@ -1,4 +1,4 @@
-package de.skyslycer.hmclink.backend.constants
+package de.skyslycer.hmclink.backend
 
 object EnvironmentVariables {
 

@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
+import mu.KotlinLogging
 import java.util.*
 
 @ExperimentalSerializationApi
@@ -27,6 +28,8 @@ class LinkMessageReceiver(
         setup()
     }
 
+    private val logger = KotlinLogging.logger {  }
+
     private val scope = CoroutineScope(Dispatchers.Default)
 
     /**
@@ -37,6 +40,8 @@ class LinkMessageReceiver(
     }
 
     private fun handleReceive(message: LinkRequestMessage) {
+        logger.info("Received link request message! Generating new code and inserting it. (UUID: ${message.player})")
+
         scope.launch {
             val user = DatabaseHandler.get(message.player)
 
@@ -65,7 +70,6 @@ class LinkMessageReceiver(
                     newCode
                 )
             }
-
             sendAnswer(message, Code(newCode, CodeGeneration.generateLink(newCode)))
         }
     }

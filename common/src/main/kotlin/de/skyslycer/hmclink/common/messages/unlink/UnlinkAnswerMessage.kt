@@ -14,5 +14,7 @@ class UnlinkAnswerMessage(
     override val to: String,
     @Contextual val player: UUID,
     val playerName: String,
+    @Contextual val executor: UUID?,
+    val executorName: String?,
     val successful: Boolean
 ) : Message()

@@ -9,3 +9,8 @@ api-version: '1.17'
 
 softdepend:
   - 'PlaceholderAPI'
+
+permissions:
+  hmclink.unlinkothers:
+    description: 'Gives you the ability to unlink other players.'
+    default: op

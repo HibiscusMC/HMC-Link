@@ -1,6 +1,6 @@
 package de.skyslycer.hmclink.backend.http
 
-import de.skyslycer.hmclink.backend.constants.EnvironmentVariables
+import de.skyslycer.hmclink.backend.EnvironmentVariables
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
 import de.skyslycer.hmclink.backend.database.DatabaseUser
 import de.skyslycer.hmclink.backend.http.payload.GuildAddPayload
@@ -18,6 +18,7 @@ import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.serialization.ExperimentalSerializationApi
+import mu.KotlinLogging
 import java.util.*
 
 @ExperimentalSerializationApi
@@ -26,6 +27,8 @@ class HTTPServer(private val messageHandler: MessageHandler) {
     init {
         setup()
     }
+
+    private val logger = KotlinLogging.logger {  }
 
     private fun setup() {
         embeddedServer(CIO, port = 9348) {
@@ -44,6 +47,8 @@ class HTTPServer(private val messageHandler: MessageHandler) {
     private suspend fun handleRequest(call: ApplicationCall) {
         val verificationCode = call.request.queryParameters["verification"]
 
+        logger.info("Received HTTP link request call! Generating oAuth link... (code: $verificationCode)")
+
         if (verificationCode == null) {
             call.respondRedirect(System.getenv(EnvironmentVariables.REDIRECT_URL))
             return
@@ -55,6 +60,8 @@ class HTTPServer(private val messageHandler: MessageHandler) {
     private suspend fun handleAnswer(call: ApplicationCall) {
         val oAuthCode = call.request.queryParameters["code"]
         val verificationCode = call.request.queryParameters["verification"]
+
+        logger.info("Received HTTP oAuth response call! Setting up link... (code: $verificationCode, oAuth: $oAuthCode)")
 
         if (oAuthCode == null || verificationCode == null) {
             call.respondRedirect(System.getenv(EnvironmentVariables.INVALID_CODE_URL))

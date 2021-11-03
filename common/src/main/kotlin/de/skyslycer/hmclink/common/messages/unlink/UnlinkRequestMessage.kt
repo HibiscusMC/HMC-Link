@@ -12,5 +12,7 @@ class UnlinkRequestMessage(
     override val from: String,
     override val to: String,
     @Contextual val player: UUID,
-    val playerName: String
+    val playerName: String,
+    @Contextual val executor: UUID?,
+    val executorName: String?
 ) : Message()

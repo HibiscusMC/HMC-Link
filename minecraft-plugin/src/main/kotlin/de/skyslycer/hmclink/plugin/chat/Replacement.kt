@@ -1,4 +1,4 @@
-package de.skyslycer.hmclink.plugin.config
+package de.skyslycer.hmclink.plugin.chat
 
 class Replacement(
     val placeholder: String,

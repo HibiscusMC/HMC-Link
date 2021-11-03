@@ -6,4 +6,4 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 @ExperimentalSerializationApi
-class MessageQueue : ConcurrentHashMap<UUID, Message>()
+class MessageQueue : Queue<Message>()

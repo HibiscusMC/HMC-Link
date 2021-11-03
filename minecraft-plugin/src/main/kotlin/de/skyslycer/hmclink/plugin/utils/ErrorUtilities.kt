@@ -1,14 +1,13 @@
 package de.skyslycer.hmclink.plugin.utils
 
 import de.skyslycer.hmclink.plugin.Constants
-import de.skyslycer.hmclink.plugin.config.ChatMessageHandler
+import de.skyslycer.hmclink.plugin.chat.ChatMessageHandler
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.time.ExperimentalTime
 
 @ExperimentalSerializationApi
-@ExperimentalTime
 class ErrorUtilities {
 
     companion object {

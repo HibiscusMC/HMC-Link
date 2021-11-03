@@ -1,6 +1,6 @@
 package de.skyslycer.hmclink.backend.utils
 
-import de.skyslycer.hmclink.backend.constants.EnvironmentVariables
+import de.skyslycer.hmclink.backend.EnvironmentVariables
 import org.apache.commons.lang3.RandomStringUtils
 
 class CodeGeneration {

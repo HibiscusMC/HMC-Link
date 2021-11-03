@@ -1,6 +1,5 @@
 package de.skyslycer.hmclink.backend
 
-import de.skyslycer.hmclink.backend.constants.EnvironmentVariables
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
 import de.skyslycer.hmclink.backend.messages.LinkMessageReceiver
 import de.skyslycer.hmclink.common.ServiceType
@@ -52,6 +51,7 @@ class HMCLinkBackend {
 
         logger.info("Setting up message listeners...")
         LinkMessageReceiver(distributor, messageHandler)
+        logger.info("Successfully enabled message listeners!")
     }
 
 }
