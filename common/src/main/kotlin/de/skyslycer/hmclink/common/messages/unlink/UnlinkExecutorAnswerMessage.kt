@@ -8,10 +8,11 @@ import java.util.*
 
 @ExperimentalSerializationApi
 @Serializable
-class UnlinkAnswerMessage(
+class UnlinkExecutorAnswerMessage(
     override val from: String,
     override val to: String,
-    @Contextual val player: UUID,
     val playerName: String,
+    @Contextual val executor: UUID,
+    val executorName: String,
     val successful: Boolean
 ) : Message()

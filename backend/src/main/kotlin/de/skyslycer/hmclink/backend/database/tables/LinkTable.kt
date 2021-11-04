@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.Table
 
 class LinkTable {
 
-    companion object : Table("hmc_link") {
+    companion object : Table("hmc_link_users") {
         val playerUUID = uuid("player_uuid")
         val playerName = varchar("player_name", 18)
         val discordID = long("discord_id").nullable()

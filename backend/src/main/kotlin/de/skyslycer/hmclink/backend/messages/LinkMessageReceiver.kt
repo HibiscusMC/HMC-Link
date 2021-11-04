@@ -2,13 +2,13 @@ package de.skyslycer.hmclink.backend.messages
 
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
 import de.skyslycer.hmclink.backend.utils.CodeGeneration
+import de.skyslycer.hmclink.backend.utils.PluginCommunicationUtilities
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.data.Code
 import de.skyslycer.hmclink.common.messages.discord.LinkRemoveMessage
 import de.skyslycer.hmclink.common.messages.link.LinkAnswerMessage
 import de.skyslycer.hmclink.common.messages.link.LinkRequestMessage
 import de.skyslycer.hmclink.common.redis.Channels
-import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
 import de.skyslycer.hmclink.common.redis.receiving.MessageReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -20,15 +20,14 @@ import java.util.*
 
 @ExperimentalSerializationApi
 class LinkMessageReceiver(
-    private val distributor: MessageDistributor,
-    private val handler: MessageHandler
+    private val distributor: MessageDistributor
 ) : MessageReceiver {
 
     init {
         setup()
     }
 
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -70,19 +69,20 @@ class LinkMessageReceiver(
                     newCode
                 )
             }
+
             sendAnswer(message, Code(newCode, CodeGeneration.generateLink(newCode)))
         }
     }
 
-    private fun sendAnswer(message: LinkRequestMessage, code: Code?) {
-        handler.pubSubHelper.publish(
-            Channels.STANDARD,
+    private suspend fun sendAnswer(message: LinkRequestMessage, code: Code?) {
+        PluginCommunicationUtilities.send(
+            distributor.messageHandler,
             LinkAnswerMessage(message.to, message.from, message.player, message.playerName, code)
         )
     }
 
     private fun sendLinkRemove(id: Long) {
-        handler.pubSubHelper.publish(
+        distributor.messageHandler.pubSubHelper.publish(
             Channels.STANDARD,
             LinkRemoveMessage(
                 ServiceType.BACKEND,

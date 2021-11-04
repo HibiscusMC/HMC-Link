@@ -9,7 +9,6 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import kotlinx.serialization.ExperimentalSerializationApi
 import mu.KotlinLogging
-import kotlin.math.log
 
 @ExperimentalSerializationApi
 suspend fun main() {
@@ -20,6 +19,12 @@ suspend fun main() {
 class HMCLinkDiscord {
 
     private val logger = KotlinLogging.logger { }
+
+    private val handler = MessageHandler(
+        ServiceType.DISCORD_BOT,
+        System.getenv(EnvironmentVariables.REDIS_HOST),
+        System.getenv(EnvironmentVariables.REDIS_PORT).toInt()
+    )
 
     /**
      * A basic method to start the Discord bot.
@@ -34,14 +39,10 @@ class HMCLinkDiscord {
             return
         }
 
-        val handler = try {
-            MessageHandler(
-                ServiceType.DISCORD_BOT,
-                System.getenv(EnvironmentVariables.REDIS_HOST),
-                System.getenv(EnvironmentVariables.REDIS_PORT).toInt()
-            )
-        } catch (exception: Throwable) {
-            logger.error("An error occurred while trying to connect to Redis!")
+        val handlerReturn = handler.createJedis()
+
+        if (handlerReturn.isPresent) {
+            logger.error("An error occurred while trying to connect to Redis!", handlerReturn.get())
             return
         }
 

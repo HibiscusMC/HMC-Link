@@ -3,51 +3,35 @@ package de.skyslycer.hmclink.plugin.messaging
 import de.skyslycer.hmclink.common.messages.link.LinkAnswerMessage
 import de.skyslycer.hmclink.common.messages.link.LinkErrorMessage
 import de.skyslycer.hmclink.common.messages.link.LinkSuccessMessage
-import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
-import de.skyslycer.hmclink.common.redis.receiving.MessageReceiver
+import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.plugin.chat.MessageHelper
-import de.skyslycer.hmclink.plugin.queue.MessageQueue
+import de.skyslycer.hmclink.plugin.utils.BackendCommunicationUtilities
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.bukkit.Bukkit
-import kotlin.time.ExperimentalTime
 
 @ExperimentalSerializationApi
 class LinkMessageReceiver(
-    private val distributor: MessageDistributor,
-    private val queue: MessageQueue
-) : MessageReceiver {
+    private val handler: MessageHandler
+) {
 
-    init {
-        setup()
-    }
-
-    /**
-     * Start the receiver.
-     */
-    override fun setup() {
-        distributor.add<LinkAnswerMessage> ({ handleLinkReceive(it as LinkAnswerMessage) })
-        distributor.add<LinkSuccessMessage> ({ handleLinkSuccess(it as LinkSuccessMessage) })
-        distributor.add<LinkErrorMessage> ({ handleLinkError(it as LinkErrorMessage) })
-    }
-
-    private fun handleLinkReceive(message: LinkAnswerMessage) {
-        Bukkit.getPlayer(message.player)?.sendMessage(MessageHelper.buildLinkReceiveMessage(message)) ?: kotlin.run {
-            queue.add(message.player, message)
-            return
+    fun handleLinkReceive(message: LinkAnswerMessage, code: String) {
+        Bukkit.getPlayer(message.player)?.let {
+            it.sendMessage(MessageHelper.buildLinkReceiveMessage(message))
+            BackendCommunicationUtilities.sendAcknowledge(handler, code)
         }
     }
 
-    private fun handleLinkSuccess(message: LinkSuccessMessage) {
-        Bukkit.getPlayer(message.player)?.sendMessage(MessageHelper.buildLinkSuccessMessage(message)) ?: kotlin.run {
-            queue.add(message.player, message)
-            return
+    fun handleLinkSuccess(message: LinkSuccessMessage, code: String) {
+        Bukkit.getPlayer(message.player)?.let {
+            it.sendMessage(MessageHelper.buildLinkSuccessMessage(message))
+            BackendCommunicationUtilities.sendAcknowledge(handler, code)
         }
     }
 
-    private fun handleLinkError(message: LinkErrorMessage) {
-        Bukkit.getPlayer(message.player)?.sendMessage(MessageHelper.buildLinkErrorMessage()) ?: kotlin.run {
-            queue.add(message.player, message)
-            return
+    fun handleLinkError(message: LinkErrorMessage, code: String) {
+        Bukkit.getPlayer(message.player)?.let {
+            it.sendMessage(MessageHelper.buildLinkErrorMessage())
+            BackendCommunicationUtilities.sendAcknowledge(handler, code)
         }
     }
 

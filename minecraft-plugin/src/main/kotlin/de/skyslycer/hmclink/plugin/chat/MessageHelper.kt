@@ -3,8 +3,8 @@ package de.skyslycer.hmclink.plugin.chat
 import de.skyslycer.hmclink.common.messages.link.LinkAnswerMessage
 import de.skyslycer.hmclink.common.messages.link.LinkSuccessMessage
 import de.skyslycer.hmclink.common.messages.unlink.UnlinkAnswerMessage
+import de.skyslycer.hmclink.common.messages.unlink.UnlinkExecutorAnswerMessage
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlin.time.ExperimentalTime
 
 @ExperimentalSerializationApi
 class MessageHelper {
@@ -49,7 +49,7 @@ class MessageHelper {
          * @param message The message to get the data from
          * @return The translated and parsed message
          */
-        fun buildUnlinkExecutorReceiveMessage(message: UnlinkAnswerMessage) = if (message.successful) {
+        fun buildUnlinkExecutorReceiveMessage(message: UnlinkExecutorAnswerMessage) = if (message.successful) {
             ChatMessageHandler.getParsed(Messages.EXECUTOR_UNLINK_SUCCESS, Replacement("player", message.playerName))
         } else {
             ChatMessageHandler.getParsed(Messages.EXECUTOR_NOT_LINKED, Replacement("player", message.playerName))

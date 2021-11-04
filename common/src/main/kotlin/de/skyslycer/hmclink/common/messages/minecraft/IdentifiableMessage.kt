@@ -1,17 +1,14 @@
-package de.skyslycer.hmclink.common.messages.unlink
+package de.skyslycer.hmclink.common.messages.minecraft
 
 import de.skyslycer.hmclink.common.messages.Message
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @ExperimentalSerializationApi
 @Serializable
-class UnlinkAnswerMessage(
+data class IdentifiableMessage(
     override val from: String,
     override val to: String,
-    @Contextual val player: UUID,
-    val playerName: String,
-    val successful: Boolean
+    val code: String,
+    val message: Message
 ) : Message()

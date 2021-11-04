@@ -1,7 +1,9 @@
 package de.skyslycer.hmclink.backend.database
 
 import de.skyslycer.hmclink.backend.EnvironmentVariables
+import de.skyslycer.hmclink.backend.database.tables.DiscordMessageTable
 import de.skyslycer.hmclink.backend.database.tables.LinkTable
+import de.skyslycer.hmclink.backend.database.tables.PluginMessageTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -27,7 +29,7 @@ class DatabaseHandler {
                 Database.connect(dataSource)
 
                 transaction {
-                    SchemaUtils.createMissingTablesAndColumns(LinkTable)
+                    SchemaUtils.createMissingTablesAndColumns(LinkTable, PluginMessageTable, DiscordMessageTable)
                 }
 
                 Optional.empty()
@@ -145,7 +147,7 @@ class DatabaseHandler {
         /**
          * Update an existing entry in the database from a DatabaseUser.
          *
-         * @param databaseUser The user to take the data fram
+         * @param databaseUser The user to take the data from
          */
         suspend fun update(databaseUser: DatabaseUser) {
             update(

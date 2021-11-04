@@ -7,9 +7,9 @@ import de.skyslycer.hmclink.plugin.commands.CommandRegister
 import de.skyslycer.hmclink.plugin.listeners.PlayerJoinListener
 import de.skyslycer.hmclink.plugin.messaging.LinkMessageReceiver
 import de.skyslycer.hmclink.plugin.messaging.UnlinkMessageReceiver
-import de.skyslycer.hmclink.plugin.queue.MessageQueue
+import de.skyslycer.hmclink.plugin.messaging.WaitingMessagesReceiver
+import de.skyslycer.hmclink.plugin.messaging.WrappedMessageReceiver
 import de.skyslycer.hmclink.plugin.utils.ErrorUtilities
-import kotlinx.coroutines.handleCoroutineException
 import kotlinx.serialization.ExperimentalSerializationApi
 import net.axay.kspigot.main.KSpigot
 import net.axay.kspigot.runnables.firstAsync
@@ -19,7 +19,6 @@ import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.*
-import kotlin.time.ExperimentalTime
 
 @ExperimentalSerializationApi
 class HMCLinkPlugin : KSpigot() {
@@ -27,7 +26,6 @@ class HMCLinkPlugin : KSpigot() {
     private lateinit var configuration: FileConfiguration
 
     private var messageHandler: Optional<MessageHandler> = Optional.empty()
-    private val messageQueue = MessageQueue()
 
     /**
      * The startup sequence of the plugin.
@@ -65,31 +63,40 @@ class HMCLinkPlugin : KSpigot() {
         firstAsync {
             var distributor: Optional<MessageDistributor> = Optional.empty()
 
-            try {
-                val handler = MessageHandler(
-                    ServiceType.MINECRAFT_PLUGIN,
-                    configuration.getString("connection.host", "localhost")!!,
-                    configuration.getInt("connection.host", 6379)
-                )
+            val handler = MessageHandler(
+                ServiceType.MINECRAFT_PLUGIN,
+                configuration.getString("connection.host", "localhost")!!,
+                configuration.getInt("connection.host", 6379)
+            )
 
+            val connectionResponse = handler.createJedis()
+
+            if (connectionResponse.isPresent) {
+                ErrorUtilities.sendError(ErrorUtilities.SpecificException(connectionResponse.get(), "Redis connection"))
+            } else {
                 messageHandler = Optional.of(handler)
                 distributor = Optional.of(MessageDistributor(handler))
-            } catch (exception: Throwable) {
-                ErrorUtilities.sendError(ErrorUtilities.SpecificException(exception, "Redis connection"))
             }
 
             distributor
         }.thenSync {
             if (it.isPresent && !checkDependencies()) {
                 CommandRegister(it.get())
-                PlayerJoinListener(messageQueue)
+                PlayerJoinListener(messageHandler.get())
 
-                LinkMessageReceiver(it.get(), messageQueue)
-                UnlinkMessageReceiver(it.get(), messageQueue)
+                setupMessageReceivers(it.get())
             } else {
                 Constants.PLUGIN_MANAGER.disablePlugin(this)
             }
         }
+    }
+
+    private fun setupMessageReceivers(distributor: MessageDistributor) {
+        val linkReceiver = LinkMessageReceiver(messageHandler.get())
+        val unlinkReceiver = UnlinkMessageReceiver(messageHandler.get())
+
+        WrappedMessageReceiver(distributor, linkReceiver, unlinkReceiver)
+        WaitingMessagesReceiver(distributor, linkReceiver, unlinkReceiver)
     }
 
     private fun checkDependencies(): Boolean {

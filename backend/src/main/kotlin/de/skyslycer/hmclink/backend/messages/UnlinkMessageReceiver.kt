@@ -1,16 +1,15 @@
 package de.skyslycer.hmclink.backend.messages
 
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
-import de.skyslycer.hmclink.backend.utils.CodeGeneration
+import de.skyslycer.hmclink.backend.database.tables.DiscordMessageTable
+import de.skyslycer.hmclink.backend.utils.AliveUtilities
+import de.skyslycer.hmclink.backend.utils.PluginCommunicationUtilities
 import de.skyslycer.hmclink.common.ServiceType
-import de.skyslycer.hmclink.common.data.Code
 import de.skyslycer.hmclink.common.messages.discord.LinkRemoveMessage
-import de.skyslycer.hmclink.common.messages.link.LinkAnswerMessage
-import de.skyslycer.hmclink.common.messages.link.LinkRequestMessage
 import de.skyslycer.hmclink.common.messages.unlink.UnlinkAnswerMessage
+import de.skyslycer.hmclink.common.messages.unlink.UnlinkExecutorAnswerMessage
 import de.skyslycer.hmclink.common.messages.unlink.UnlinkRequestMessage
 import de.skyslycer.hmclink.common.redis.Channels
-import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
 import de.skyslycer.hmclink.common.redis.receiving.MessageReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -18,19 +17,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import mu.KotlinLogging
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 
 @ExperimentalSerializationApi
 class UnlinkMessageReceiver(
-    private val distributor: MessageDistributor,
-    private val handler: MessageHandler
+    private val distributor: MessageDistributor
 ) : MessageReceiver {
 
     init {
         setup()
     }
 
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -69,22 +69,46 @@ class UnlinkMessageReceiver(
         }
     }
 
-    private fun sendAnswer(message: UnlinkRequestMessage, successful: Boolean) {
-        handler.pubSubHelper.publish(
-            Channels.STANDARD,
-            UnlinkAnswerMessage(message.to, message.from, message.player, message.playerName, message.executor, message.executorName, successful)
+    private suspend fun sendAnswer(message: UnlinkRequestMessage, successful: Boolean) {
+        PluginCommunicationUtilities.send(
+            distributor.messageHandler,
+            UnlinkAnswerMessage(message.to, message.from, message.player, message.playerName, successful)
         )
+
+        if (message.executor != null) {
+            PluginCommunicationUtilities.send(
+                distributor.messageHandler,
+                UnlinkExecutorAnswerMessage(
+                    message.to,
+                    message.from,
+                    message.playerName,
+                    message.executor!!,
+                    message.executorName!!,
+                    successful
+                )
+            )
+        }
     }
 
     private fun sendLinkRemove(id: Long) {
-        handler.pubSubHelper.publish(
-            Channels.STANDARD,
-            LinkRemoveMessage(
-                ServiceType.BACKEND,
-                ServiceType.DISCORD_BOT,
-                id
-            )
+        val message = LinkRemoveMessage(
+            ServiceType.BACKEND,
+            ServiceType.DISCORD_BOT,
+            id
         )
+
+        AliveUtilities.onAliveInTime(3, distributor, scope, message, {
+            distributor.messageHandler.pubSubHelper.publish(
+                Channels.STANDARD,
+                it
+            )
+        }) {
+            newSuspendedTransaction {
+                DiscordMessageTable.insert {
+                    it[this.message] = message.toByteArray()
+                }
+            }
+        }
     }
 
 }

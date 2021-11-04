@@ -1,7 +1,9 @@
 package de.skyslycer.hmclink.backend
 
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
+import de.skyslycer.hmclink.backend.messages.IdentifiableMessageReceiver
 import de.skyslycer.hmclink.backend.messages.LinkMessageReceiver
+import de.skyslycer.hmclink.backend.messages.UnlinkMessageReceiver
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
@@ -50,7 +52,9 @@ class HMCLinkBackend {
         logger.info("Successfully enabled the database!")
 
         logger.info("Setting up message listeners...")
-        LinkMessageReceiver(distributor, messageHandler)
+        LinkMessageReceiver(distributor)
+        UnlinkMessageReceiver(distributor)
+        IdentifiableMessageReceiver(distributor)
         logger.info("Successfully enabled message listeners!")
     }
 
