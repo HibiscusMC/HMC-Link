@@ -1,13 +1,10 @@
 package de.skyslycer.hmclink.common.redis
 
-import de.skyslycer.hmclink.common.messages.Message
 import de.skyslycer.hmclink.common.messages.checks.AliveMessage
 import kotlinx.serialization.ExperimentalSerializationApi
 import redis.clients.jedis.HostAndPort
 import redis.clients.jedis.Jedis
 import java.util.*
-import kotlin.collections.HashSet
-import kotlin.jvm.Throws
 
 @ExperimentalSerializationApi
 class MessageHandler(val serviceType: String, private val host: String, private val port: Int) {

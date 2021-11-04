@@ -9,7 +9,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import mu.KotlinLogging
 import java.util.*
-import kotlin.math.log
 
 class DiscordRequests {
 

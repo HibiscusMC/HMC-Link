@@ -5,7 +5,6 @@ import de.skyslycer.hmclink.plugin.chat.ChatMessageHandler
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.time.ExperimentalTime
 
 @ExperimentalSerializationApi
 class ErrorUtilities {

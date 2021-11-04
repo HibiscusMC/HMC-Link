@@ -3,7 +3,6 @@ package de.skyslycer.hmclink.plugin.commands
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
-import dev.jorel.commandapi.annotations.Permission
 import dev.jorel.commandapi.arguments.OfflinePlayerArgument
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.jorel.commandapi.executors.PlayerCommandExecutor
@@ -12,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.bukkit.Bukkit
 import java.util.*
-import kotlin.time.ExperimentalTime
 
 @ExperimentalSerializationApi
 class CommandRegister(
