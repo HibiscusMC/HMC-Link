@@ -29,7 +29,7 @@ class MessageHelper {
          * @return The translated and parsed message
          */
         fun buildLinkSuccessMessage(message: LinkSuccessMessage) =
-            ChatMessageHandler.getParsed(Messages.LINK_SUCCESS, Replacement("account", message.discordName))
+            ChatMessageHandler.getParsed(Messages.LINK_SUCCESS, Replacement("discord", message.discordName))
 
         /**
          * Build the unlink answer message.
