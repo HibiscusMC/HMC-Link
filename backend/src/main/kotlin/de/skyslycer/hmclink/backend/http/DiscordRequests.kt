@@ -13,7 +13,7 @@ import java.util.*
 class DiscordRequests {
 
     companion object {
-        private val logger = KotlinLogging.logger {  }
+        private val logger = KotlinLogging.logger { }
 
         private const val BASE_URL = "https://discord.com/api/9"
 

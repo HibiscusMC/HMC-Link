@@ -1,9 +1,7 @@
 package de.skyslycer.hmclink.backend
 
 import de.skyslycer.hmclink.backend.database.DatabaseHandler
-import de.skyslycer.hmclink.backend.messages.IdentifiableMessageReceiver
-import de.skyslycer.hmclink.backend.messages.LinkMessageReceiver
-import de.skyslycer.hmclink.backend.messages.UnlinkMessageReceiver
+import de.skyslycer.hmclink.backend.messages.*
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
@@ -36,26 +34,39 @@ class HMCLinkBackend {
         logger.info("Starting the HMC Link Backend!")
 
         logger.info("Initializing Redis...")
+
         val redisReturn = messageHandler.createJedis()
+
         if (redisReturn.isPresent) {
             logger.error("Couldn't enable Redis! Shutting down the backend.", redisReturn.get())
             exitProcess(1)
         }
-        logger.info("Successfully enabled Redis!")
+
+        logger.info("Successfully connected to Redis!")
 
         logger.info("Initializing database...")
+
         val databaseReturn = DatabaseHandler.connect()
+
         if (databaseReturn.isPresent) {
             logger.error("Couldn't enable the database! Shutting down the backend.", redisReturn.get())
             exitProcess(1)
         }
-        logger.info("Successfully enabled the database!")
+
+        logger.info("Successfully connected to the database!")
 
         logger.info("Setting up message listeners...")
+
         LinkMessageReceiver(distributor)
         UnlinkMessageReceiver(distributor)
         IdentifiableMessageReceiver(distributor)
-        logger.info("Successfully enabled message listeners!")
+        LinkedUserRequestReceiver(distributor)
+        DiscordVoiceChannelUpdateReceiver(distributor)
+        VoiceChannelRequestReceiver(distributor)
+
+        logger.info("Successfully started message listeners!")
+
+        RepeatedAliveChecker.setup(distributor)
     }
 
 }

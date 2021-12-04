@@ -4,7 +4,6 @@ import de.skyslycer.hmclink.common.messages.unlink.UnlinkAnswerMessage
 import de.skyslycer.hmclink.common.messages.unlink.UnlinkExecutorAnswerMessage
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.plugin.chat.MessageHelper
-import de.skyslycer.hmclink.plugin.chat.Replacement
 import de.skyslycer.hmclink.plugin.rewards.RewardProcessor
 import de.skyslycer.hmclink.plugin.rewards.RewardType
 import de.skyslycer.hmclink.plugin.utils.BackendCommunicationUtilities

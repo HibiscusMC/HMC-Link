@@ -70,10 +70,10 @@ class RewardProcessor {
         player: Player,
         vararg additionalPlaceholders: Replacement
     ): String = Replacement.replace(
-            string,
-            Replacement("name", player.name),
-            Replacement("uuid", player.uniqueId.toString()),
-            *additionalPlaceholders
-        )
+        string,
+        Replacement("name", player.name),
+        Replacement("uuid", player.uniqueId.toString()),
+        *additionalPlaceholders
+    )
 
 }

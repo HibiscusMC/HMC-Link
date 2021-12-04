@@ -24,7 +24,10 @@ class MessageDistributor(val messageHandler: MessageHandler) : MessageReceiver {
      * @param executor The executor that runs, when all conditions are met
      * @param oneTime If the distributor should remove itself after one run
      */
-    inline fun <reified T : Message> add(noinline executor: (Message) -> Unit, oneTime: Boolean = false): DistributorData {
+    inline fun <reified T : Message> add(
+        noinline executor: (Message) -> Unit,
+        oneTime: Boolean = false
+    ): DistributorData {
         val data = DistributorData({ it is T }, executor, oneTime)
 
         distributors.add(data)

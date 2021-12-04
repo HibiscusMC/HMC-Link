@@ -28,7 +28,7 @@ class HTTPServer(private val messageHandler: MessageHandler) {
         setup()
     }
 
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
 
     private fun setup() {
         embeddedServer(CIO, port = 9348) {
@@ -156,7 +156,7 @@ class HTTPServer(private val messageHandler: MessageHandler) {
         return GuildAddPayload(
             oAuthCode,
             DiscordUtilities.toNickName(discordName, playerName),
-            arrayOf(System.getenv(EnvironmentVariables.LINKED_ROLE).toLong())
+            arrayOf(System.getenv(EnvironmentVariables.LINKED_ROLE).toLong()).toLongArray()
         )
     }
 

@@ -4,6 +4,7 @@ import de.skyslycer.hmclink.backend.EnvironmentVariables
 import de.skyslycer.hmclink.backend.database.tables.DiscordMessageTable
 import de.skyslycer.hmclink.backend.database.tables.LinkTable
 import de.skyslycer.hmclink.backend.database.tables.PluginMessageTable
+import de.skyslycer.hmclink.common.data.User
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -95,6 +96,34 @@ class DatabaseHandler {
         }
 
         /**
+         * Get a user by Discord id.
+         *
+         * @param id The id to search for
+         * @return The DatabaseUser if applicable
+         */
+        suspend fun get(id: Long): Optional<DatabaseUser> {
+            val result = newSuspendedTransaction {
+                LinkTable.select {
+                    LinkTable.discordID eq id
+                }.firstOrNull()
+            } ?: return Optional.empty()
+
+            return with(LinkTable) {
+                Optional.of(
+                    DatabaseUser(
+                        result[playerUUID],
+                        result[playerName],
+                        Optional.of(id),
+                        Optional.ofNullable(result[discordName]),
+                        Optional.ofNullable(result[code]),
+                        result[linked],
+                        result[everLinked]
+                    )
+                )
+            }
+        }
+
+        /**
          * Insert a user.
          *
          * @param uuid The Minecraft UUID of the player
@@ -159,6 +188,25 @@ class DatabaseHandler {
                 databaseUser.everLinked
             )
         }
+
+        /**
+         * Convert a DatabaseUser to a User.
+         *
+         * @param user The DatabaseUser to convert
+         * @return The converted User
+         */
+        fun toUniversalUser(user: DatabaseUser): User {
+            return User(
+                user.playerUUID,
+                user.playerName,
+                user.discordID.orElse(null),
+                user.discordName.orElse(null),
+                user.code.orElse(null),
+                user.linked,
+                user.everLinked
+            )
+        }
+
     }
 
 }

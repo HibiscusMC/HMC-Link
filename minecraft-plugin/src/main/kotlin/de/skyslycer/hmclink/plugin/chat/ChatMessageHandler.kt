@@ -29,7 +29,8 @@ class ChatMessageHandler {
          * @param replacements The replacements that should be applied to the message
          * @return The translated message
          */
-        fun getTranslated(key: String, vararg replacements: Replacement): String = Replacement.replace(get(key), *replacements)
+        fun getTranslated(key: String, vararg replacements: Replacement): String =
+            Replacement.replace(get(key), *replacements)
 
         /**
          * Get a message, replace the replacements and parse it with MiniMessage.

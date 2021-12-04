@@ -26,7 +26,13 @@ class AliveUtilities {
          * @param player The player for the executor
          * @param executor The executor that is executed when the backend responds
          */
-        fun onAliveInTime(time: Int, distributor: MessageDistributor, scope: CoroutineScope, player: Player, executor: (Player) -> Unit) {
+        fun onAliveInTime(
+            time: Int,
+            distributor: MessageDistributor,
+            scope: CoroutineScope,
+            player: Player,
+            executor: (Player) -> Unit
+        ) {
             scope.launch {
                 var alive = false
 

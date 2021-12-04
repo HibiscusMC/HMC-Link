@@ -3,6 +3,7 @@ package de.skyslycer.hmclink.discord
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
+import de.skyslycer.hmclink.discord.messaging.DiscordVoiceChannelRequestReceiver
 import de.skyslycer.hmclink.discord.messaging.UnlinkMessageReceiver
 import dev.kord.core.Kord
 import dev.kord.gateway.Intent
@@ -49,6 +50,7 @@ class HMCLinkDiscord {
         val distributor = MessageDistributor(handler)
 
         UnlinkMessageReceiver(distributor, kord)
+        DiscordVoiceChannelRequestReceiver(distributor, kord)
 
         logger.info("Successfully started the Discord bot!")
 

@@ -19,9 +19,9 @@ class RepeatedAliveChecker {
         private val scope = CoroutineScope(Dispatchers.Default)
 
         fun setup(distributor: MessageDistributor) {
-           scope.launch {
-               start(distributor)
-           }
+            scope.launch {
+                start(distributor)
+            }
         }
 
         private suspend fun start(distributor: MessageDistributor) {

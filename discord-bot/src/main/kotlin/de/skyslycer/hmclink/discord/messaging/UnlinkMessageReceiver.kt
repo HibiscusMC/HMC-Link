@@ -19,7 +19,7 @@ class UnlinkMessageReceiver(
     private val kord: Kord
 ) : MessageReceiver {
 
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
 
     init {
         setup()
