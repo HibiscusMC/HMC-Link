@@ -3,12 +3,14 @@ package de.skyslycer.hmclink.plugin
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
+import de.skyslycer.hmclink.plugin.caching.user.UserCache
+import de.skyslycer.hmclink.plugin.caching.user.UserCacheUpdater
+import de.skyslycer.hmclink.plugin.caching.voice.VoiceCache
+import de.skyslycer.hmclink.plugin.caching.voice.VoiceCacheUpdater
 import de.skyslycer.hmclink.plugin.commands.CommandRegister
 import de.skyslycer.hmclink.plugin.listeners.PlayerJoinListener
-import de.skyslycer.hmclink.plugin.messaging.LinkMessageReceiver
-import de.skyslycer.hmclink.plugin.messaging.UnlinkMessageReceiver
-import de.skyslycer.hmclink.plugin.messaging.WaitingMessagesReceiver
-import de.skyslycer.hmclink.plugin.messaging.WrappedMessageReceiver
+import de.skyslycer.hmclink.plugin.messaging.*
+import de.skyslycer.hmclink.plugin.rewards.RewardProcessor
 import de.skyslycer.hmclink.plugin.utils.ErrorUtilities
 import kotlinx.serialization.ExperimentalSerializationApi
 import net.axay.kspigot.main.KSpigot
@@ -24,6 +26,10 @@ import java.util.*
 class HMCLinkPlugin : KSpigot() {
 
     private lateinit var configuration: FileConfiguration
+
+    private val rewardProcessor = RewardProcessor()
+    private val userCache = UserCache()
+    private val voiceCache = VoiceCache()
 
     private var messageHandler: Optional<MessageHandler> = Optional.empty()
 
@@ -84,6 +90,11 @@ class HMCLinkPlugin : KSpigot() {
                 CommandRegister(it.get())
                 PlayerJoinListener(messageHandler.get())
 
+                rewardProcessor.loadAll(configuration)
+
+                UserCacheUpdater(userCache, messageHandler.get(), configuration)
+                VoiceCacheUpdater(voiceCache, messageHandler.get(), configuration)
+
                 setupMessageReceivers(it.get())
             } else {
                 Constants.PLUGIN_MANAGER.disablePlugin(this)
@@ -92,8 +103,10 @@ class HMCLinkPlugin : KSpigot() {
     }
 
     private fun setupMessageReceivers(distributor: MessageDistributor) {
-        val linkReceiver = LinkMessageReceiver(messageHandler.get())
-        val unlinkReceiver = UnlinkMessageReceiver(messageHandler.get())
+        val linkReceiver = LinkMessageReceiver(messageHandler.get(), rewardProcessor)
+        val unlinkReceiver = UnlinkMessageReceiver(messageHandler.get(), rewardProcessor)
+        LinkedUserUpdateReceiver(distributor, userCache)
+        VoiceChannelUpdateReceiver(distributor, voiceCache)
 
         WrappedMessageReceiver(distributor, linkReceiver, unlinkReceiver)
         WaitingMessagesReceiver(distributor, linkReceiver, unlinkReceiver)

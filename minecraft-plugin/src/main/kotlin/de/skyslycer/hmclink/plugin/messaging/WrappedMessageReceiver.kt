@@ -7,6 +7,8 @@ import de.skyslycer.hmclink.common.messages.link.LinkSuccessMessage
 import de.skyslycer.hmclink.common.messages.minecraft.IdentifiableMessage
 import de.skyslycer.hmclink.common.messages.unlink.UnlinkAnswerMessage
 import de.skyslycer.hmclink.common.messages.unlink.UnlinkExecutorAnswerMessage
+import de.skyslycer.hmclink.common.messages.updates.LinkedUserUpdateMessage
+import de.skyslycer.hmclink.common.messages.updates.VoiceChannelUpdateMessage
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
 import de.skyslycer.hmclink.common.redis.receiving.MessageReceiver
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -15,7 +17,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 class WrappedMessageReceiver(
     private val distributor: MessageDistributor,
     private val linkReceiver: LinkMessageReceiver,
-    private val unlinkReceiver: UnlinkMessageReceiver
+    private val unlinkReceiver: UnlinkMessageReceiver,
 ) : MessageReceiver {
 
     init {

@@ -1,3 +1,7 @@
 .gradle
 .idea
 build
+minecraft-plugin/build
+common/build/
+backend/build/
+discord-bot/build/

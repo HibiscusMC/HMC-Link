@@ -10,3 +10,8 @@ connection:
   # The ip and port
   ip: 'localhost'
   port: 1337
+
+# Updater settings
+updater:
+  user-cache: 5 # minutes
+  voice-cache: 20 # minutes

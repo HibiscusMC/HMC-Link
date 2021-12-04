@@ -37,8 +37,6 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
 
     implementation("dev.jorel.CommandAPI:commandapi-shade:$commandApiVersion")
-    compileOnly("dev.jorel.CommandAPI:commandapi-annotations:$commandApiVersion")
-    kapt("dev.jorel.CommandAPI:commandapi-annotations:$commandApiVersion")
 
     compileOnly("me.clip:placeholderapi:2.10.10")
 

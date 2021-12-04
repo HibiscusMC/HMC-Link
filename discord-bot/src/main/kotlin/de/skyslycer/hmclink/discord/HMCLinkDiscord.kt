@@ -3,6 +3,10 @@ package de.skyslycer.hmclink.discord
 import de.skyslycer.hmclink.common.ServiceType
 import de.skyslycer.hmclink.common.redis.MessageHandler
 import de.skyslycer.hmclink.common.redis.receiving.MessageDistributor
+import de.skyslycer.hmclink.discord.listeners.Listener
+import de.skyslycer.hmclink.discord.listeners.ListenerHook
+import de.skyslycer.hmclink.discord.listeners.VoiceStateUpdateListener
+import de.skyslycer.hmclink.discord.listeners.add
 import de.skyslycer.hmclink.discord.messaging.DiscordVoiceChannelRequestReceiver
 import de.skyslycer.hmclink.discord.messaging.UnlinkMessageReceiver
 import dev.kord.core.Kord
@@ -18,6 +22,8 @@ suspend fun main() {
 
 @ExperimentalSerializationApi
 class HMCLinkDiscord {
+
+    private val listeners = mutableListOf<Pair<Listener<*>, ListenerHook>>()
 
     private val logger = KotlinLogging.logger { }
 
@@ -51,6 +57,8 @@ class HMCLinkDiscord {
 
         UnlinkMessageReceiver(distributor, kord)
         DiscordVoiceChannelRequestReceiver(distributor, kord)
+
+        VoiceStateUpdateListener(distributor).add(listeners)
 
         logger.info("Successfully started the Discord bot!")
 
