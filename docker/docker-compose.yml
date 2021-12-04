@@ -1,0 +1,50 @@
+services:
+  redis:
+    image: 'redis'
+    restart: 'unless-stopped'
+    ports:
+      - '8444:8443'
+  postgres:
+    image: 'postgres'
+    restart: 'unless-stopped'
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data/'
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'hmclink'
+  hmclink:
+    image: 'hmclink'
+    restart: 'unless-stopped'
+    volumes:
+      - 'hmclink_data:/run/waiting_messages'
+    ports:
+      - '9348:9348'
+    depends_on:
+      - 'redis'
+      - 'postgres'
+    environment:
+      - REDIS_HOST=localhost
+      - REDIS_PORT=8444
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5433
+      - POSTGRES_NAME=hmclink
+      - BOT_TOKEN=bottoken
+      - GUILD_ID=guildid
+      - LINKED_ROLE=linkedrole
+      - NICKNAME_TEMPLATE=[%mc%] %dc%
+      - REDIRECT_URL=urlforwrongrequests
+      - ERROR_REDIRECT_URL=urlforerrors
+      - INVALID_CODE_URL=urlforinvalidcodes
+      - SUCCESS_REDIRECT_URL=urlwheneverythingwentfine
+      - OAUTH_LINK=oauthlink
+      - LINK_TEMPLATE=linktemplate
+      - BACKEND_RAM=512
+      - DISCORD_RAM=512
+      - GITHUB_USER=user
+      - SSH_PRIVATE_KEY=privatekey
+
+volumes:
+  postgres_data:
+  hmclink_data:

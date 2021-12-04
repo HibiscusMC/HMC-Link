@@ -11,7 +11,7 @@ class OAuthLinkGeneration {
          * @param code The code to send along
          * @return The newly built link
          */
-        fun generateOAuthLink(code: String): String = String.format(System.getenv(EnvironmentVariables.OAUTH_URL), code)
+        fun generateOAuthLink(code: String): String = System.getenv(EnvironmentVariables.OAUTH_URL).replace("%code%", code)
     }
 
 }

@@ -52,7 +52,7 @@ class DiscordRequests {
             logger.info("Getting user information... (token: $token)")
 
             return try {
-                Optional.of(client.get<UserPayload>("$BASE_URL/users/@me") {
+                Optional.of(client.get("$BASE_URL/users/@me") {
                     header("Authorization", "Bearer $token")
                 })
             } catch (exception: Throwable) {
