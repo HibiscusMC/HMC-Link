@@ -16,9 +16,14 @@ services:
       POSTGRES_DB: 'hmclink'
   hmclink:
     image: 'hmclink'
+    build:
+      context: .
+      args:
+        - BACKEND_RAM="512"
+        - DISCORD_RAM="512"
     restart: 'unless-stopped'
     volumes:
-      - 'hmclink_data:/run/waiting_messages'
+      - 'hmclink_data:~/run/waiting_messages'
     ports:
       - '9348:9348'
     depends_on:
@@ -40,8 +45,6 @@ services:
       - SUCCESS_REDIRECT_URL=urlwheneverythingwentfine
       - OAUTH_LINK=oauthlink
       - LINK_TEMPLATE=linktemplate
-      - BACKEND_RAM=512
-      - DISCORD_RAM=512
 
 volumes:
   postgres_data:
