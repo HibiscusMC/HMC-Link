@@ -5,8 +5,8 @@ FROM alpine as prebuild
 WORKDIR ~/hmclink
 
 # Create user and group and install git
-RUN addgroup -g 1000 hmclink \
-  && adduser -u 1000 -G 1000 hmclink \
+RUN addgroup hmclink \
+  && adduser -u 1000 -G hmclink hmclink \
   && apt-get update \
   && apt-get install -y git \
   && git clone git://github.com/HibiscusMC/HMC-Link.git
