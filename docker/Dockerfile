@@ -6,7 +6,7 @@ WORKDIR ~/hmclink
 
 # Create user and group and install git
 RUN addgroup -g 1000 hmclink \
-  && adduser -r -u 1000 -g 1000 -m hmclink \
+  && adduser -u 1000 -G 1000 hmclink \
   && apt-get update \
   && apt-get install -y git \
   && git clone git://github.com/HibiscusMC/HMC-Link.git
