@@ -5,15 +5,11 @@ WORKDIR /home/hmclink
 RUN apt-get update
 RUN apt-get install -y git
 
-# Add credentials on build
-RUN mkdir /root/.ssh/
-RUN echo "${SSH_PRIVATE_KEY} > /root/.ssh/id_rsa"
-
 # Add GitHub to known hosts
 RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-RUN git clone "${GITHUB_USER}@github.com:HibiscusMC/HMC-Link.git"
+RUN git clone git://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17
 
