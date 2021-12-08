@@ -13,7 +13,7 @@ RUN echo "${SSH_PRIVATE_KEY} > /root/.ssh/id_rsa"
 RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-RUN git clone "${GITHUB_USER}@github.com:HibiscusMC/HMCLink.git"
+RUN git clone "${GITHUB_USER}@github.com:HibiscusMC/HMC-Link.git"
 
 FROM eclipse-temurin:17
 
