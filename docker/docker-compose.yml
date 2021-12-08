@@ -42,8 +42,6 @@ services:
       - LINK_TEMPLATE=linktemplate
       - BACKEND_RAM=512
       - DISCORD_RAM=512
-      - GITHUB_USER=user
-      - SSH_PRIVATE_KEY=privatekey
 
 volumes:
   postgres_data:
