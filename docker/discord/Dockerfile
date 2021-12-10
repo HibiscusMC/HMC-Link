@@ -1,4 +1,3 @@
-ARG BACKEND_RAM
 ARG DISCORD_RAM
 
 FROM alpine as prebuild
@@ -6,7 +5,7 @@ WORKDIR ~/hmclink
 
 # Create user and group and install git
 RUN addgroup hmclink \
-  && adduser -u 1000 -G hmclink hmclink \
+  && adduser -u 1100 -G hmclink discord \
   && apt-get update \
   && apt-get install -y git \
   && git clone git://github.com/HibiscusMC/HMC-Link.git
@@ -26,10 +25,8 @@ WORKDIR ~/hmclink/run/
 
 # Copy jars
 COPY --from=build /build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
-COPY --from=build /build/HMCLink/discord-bot/build/libs/discord-bot-*.*.*.jar discord.jar
 
 # Run jars
-ENTRYPOINT [ "java", "-Xmx${BACKEND_RAM}M", "-jar backend.jar" ]
 ENTRYPOINT [ "java", "-Xmx${DISCORD_RAM}M", "-jar discord.jar" ]
 
 USER hmclink

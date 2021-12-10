@@ -14,16 +14,13 @@ services:
     environment:
       POSTGRES_PASSWORD: 'password'
       POSTGRES_DB: 'hmclink'
-  hmclink:
-    image: 'hmclink'
+  hmclink-backend:
+    image: 'hmclink-backend'
     build:
       context: .
       args:
         - BACKEND_RAM="512"
-        - DISCORD_RAM="512"
     restart: 'unless-stopped'
-    volumes:
-      - 'hmclink_data:~/run/waiting_messages'
     ports:
       - '9348:9348'
     depends_on:
@@ -45,6 +42,23 @@ services:
       - SUCCESS_REDIRECT_URL=urlwheneverythingwentfine
       - OAUTH_LINK=oauthlink
       - LINK_TEMPLATE=linktemplate
+  hmclink-discord:
+    image: 'hmclink-discord'
+    build:
+      context: .
+      args:
+        - DISCORD_RAM="512"
+    restart: 'unless-stopped'
+    volumes:
+      - 'hmclink_data:~/run/waiting_messages'
+    depends_on:
+      - 'hmclink-backend'
+    environment:
+      - REDIS_HOST=localhost
+      - REDIS_PORT=8444
+      - BOT_TOKEN=bottoken
+      - GUILD_ID=guildid
+      - LINKED_ROLE=linkedrole
 
 volumes:
   postgres_data:
