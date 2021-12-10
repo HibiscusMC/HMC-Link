@@ -5,7 +5,7 @@ WORKDIR ~/hmclink
 
 # Create user and group and install git
 RUN addgroup hmclink \
-  && adduser -u 1000 -G hmclink discord \
+  && adduser --uid 1000 -G hmclink discord \
   && apt-get update \
   && apt-get install -y git \
   && git clone git://github.com/HibiscusMC/HMC-Link.git
