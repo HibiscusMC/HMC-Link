@@ -27,6 +27,5 @@ WORKDIR ~/hmclink/run/
 COPY --from=build /build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
 
 # Run jars
-ENTRYPOINT [ "java", "-Xmx${DISCORD_RAM}M", "-jar discord.jar" ]
-
 USER discord
+ENTRYPOINT [ "java", "-Xmx${DISCORD_RAM}M", "-jar discord.jar" ]
