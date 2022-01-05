@@ -5,7 +5,6 @@
 ARG BACKEND_RAM
 
 FROM alpine as prebuild
-WORKDIR /hmclink/
 
 # Create user and group and install git
 RUN addgroup hmclink \
@@ -15,11 +14,10 @@ RUN addgroup hmclink \
   && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17-alpine as build
-WORKDIR /
 
 # Build the jar
 RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
-COPY --from=prebuild /hmclink/HMCLink/ build/HMCLink/
+COPY --from=prebuild /HMCLink ./HMCLink/
 RUN cd HMCLink && ./gradlew clean build
 
 FROM eclipse-temurin:17-alpine
