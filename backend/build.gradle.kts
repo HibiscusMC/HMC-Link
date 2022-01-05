@@ -2,10 +2,10 @@ val ktorVersion = "1.6.4"
 val exposedVersion = "0.34.1"
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.6.0"
     kotlin("plugin.serialization") version "1.5.31"
 
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.1"
 }
 
 group = "de.skyslycer.hmclink"
@@ -36,4 +36,28 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
     implementation("org.postgresql:postgresql:42.2.19")
+}
+
+tasks {
+    build {
+        dependsOn("shadowJar")
+    }
+
+    shadowJar {
+        minimize()
+        val classifier: String? = null
+        archiveClassifier.set(classifier)
+    }
+
+    jar {
+        manifest {
+            attributes["Main-Class"] = "de.skyslycer.hmclink.backend.HMCLinkBackendKt"
+        }
+    }
+
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
 }

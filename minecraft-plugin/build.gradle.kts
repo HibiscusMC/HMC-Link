@@ -4,11 +4,11 @@ val shadePattern = "de.skyslycer.hmclink.plugin.shade"
 val commandApiVersion = "6.3.1"
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.6.0"
     kotlin("kapt") version "1.5.30"
     kotlin("plugin.serialization") version "1.5.31"
 
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.1"
 
     id("de.nycode.spigot-dependency-loader") version "1.1.1"
 }
@@ -46,7 +46,7 @@ dependencies {
 tasks {
     withType<KotlinCompile>().all {
         kotlinOptions {
-            jvmTarget = "16"
+            jvmTarget = "17"
         }
     }
 
@@ -55,6 +55,8 @@ tasks {
     }
 
     shadowJar {
+        minimize()
+
         val classifier: String? = null
         archiveClassifier.set(classifier)
 
