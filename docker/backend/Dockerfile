@@ -5,10 +5,10 @@ WORKDIR ~/hmclink
 
 # Create user and group and install git
 RUN addgroup hmclink \
-  && adduser --uid 1000 -G hmclink discord \
+  && adduser --uid 1000 -G hmclink -p "" backend \
   && apt-get update \
-  && apt-get install -y git \
-  && git clone git://github.com/HibiscusMC/HMC-Link.git
+  && apt-get install git -y \
+  && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17-alpine as build
 
@@ -27,6 +27,5 @@ WORKDIR ~/hmclink/run/
 COPY --from=build /build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
 
 # Run jars
+USER backend
 ENTRYPOINT [ "java", "-Xmx${BACKEND_RAM}M", "-jar backend.jar" ]
-
-USER hmclink
