@@ -7,9 +7,7 @@ ARG DISCORD_RAM
 FROM alpine as prebuild
 
 # Create user and group and install git
-RUN addgroup hmclink \
-  && adduser -u 1000 -G hmclink -D -H discord \
-  && apk -U upgrade \
+RUN apk -U upgrade \
   && apk add git \
   && git clone https://github.com/HibiscusMC/HMC-Link.git
 
@@ -18,7 +16,7 @@ FROM eclipse-temurin:17-alpine as build
 # Build the jar
 RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
 COPY --from=prebuild /HMC-Link ./HMCLink/
-RUN cd HMCLink && chown discord gradlew && ./gradlew clean build
+RUN cd HMCLink && chmod +x gradlew && ./gradlew clean build
 
 FROM eclipse-temurin:17-alpine
 WORKDIR /hmclink/
@@ -28,6 +26,8 @@ RUN mkdir run && cd run
 
 # Copy jars
 COPY --from=build /hmclink/build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
+
+RUN adduser -u 1000 -G hmclink -D -H discord
 
 # Run jars
 USER discord
