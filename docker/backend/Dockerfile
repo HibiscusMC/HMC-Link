@@ -5,7 +5,7 @@
 ARG BACKEND_RAM
 
 FROM alpine as prebuild
-WORKDIR ~/hmclink
+WORKDIR /hmclink/
 
 # Create user and group and install git
 RUN addgroup hmclink \
@@ -17,18 +17,18 @@ RUN addgroup hmclink \
 FROM eclipse-temurin:17-alpine as build
 
 # Build the jars
-RUN mkdir "~/build/"
-COPY --from=prebuild /HMCLink /build/HMCLink
-RUN cd ~/build/HMCLink && ./gradlew clean build
+RUN mkdir "/hmclink/build/"
+COPY --from=prebuild / /hmclink/build/
+RUN cd /hmclink/build/HMCLink && ./gradlew clean build
 
 # Create run folder
-RUN cd ~/ && mkdir ~/run/
+RUN cd /hmclink/ && mkdir run
 
 FROM eclipse-temurin:17-alpine
-WORKDIR ~/hmclink/run/
+WORKDIR /hmclink/run/
 
 # Copy jars
-COPY --from=build /build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
+COPY --from=build /hmclink/build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
 
 # Run jars
 USER backend
