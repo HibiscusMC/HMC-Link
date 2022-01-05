@@ -1,3 +1,8 @@
+# After you have built the images, you have to run
+# docker-compose up -d
+# in this directory.
+# To see the output for debugging, remove the -d (detach) option.
+
 services:
   redis:
     image: 'redis'

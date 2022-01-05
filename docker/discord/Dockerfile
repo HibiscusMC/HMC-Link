@@ -1,3 +1,7 @@
+# To create an image for the docker-compose file, run
+# docker image build --label hmclink-discord .
+# in this directory.
+
 ARG DISCORD_RAM
 
 FROM alpine as prebuild

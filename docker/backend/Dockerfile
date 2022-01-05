@@ -1,3 +1,7 @@
+# To create an image for the docker-compose file, run
+# docker image build --label hmclink-backend .
+# in this directory.
+
 ARG BACKEND_RAM
 
 FROM alpine as prebuild
