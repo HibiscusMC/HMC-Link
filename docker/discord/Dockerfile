@@ -17,14 +17,14 @@ FROM eclipse-temurin:17-alpine as build
 
 # Build the jar
 RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
-COPY --from=prebuild /HMCLink ./HMCLink/
+COPY --from=prebuild /HMC-Link ./HMCLink/
 RUN cd HMCLink && ./gradlew clean build
 
 FROM eclipse-temurin:17-alpine
 WORKDIR /hmclink/
 
 # Create run folder
-RUN cd /hmclink && mkdir run && cd run
+RUN mkdir run && cd run
 
 # Copy jars
 COPY --from=build /hmclink/build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
