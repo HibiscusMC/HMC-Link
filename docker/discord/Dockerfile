@@ -15,17 +15,18 @@ RUN addgroup hmclink \
   && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17-alpine as build
+WORKDIR /
 
-# Build the jars
-RUN mkdir "/hmclink/build/"
-COPY --from=prebuild / /build/HMCLink
-RUN cd /hmclink/build/HMCLink && ./gradlew clean build
-
-# Create run folder
-RUN cd /hmclink/ && mkdir run
+# Build the jar
+RUN mkdir hmclink && cd hmclink && mkdir build
+COPY --from=prebuild / build/
+RUN cd HMCLink && ./gradlew clean build
 
 FROM eclipse-temurin:17-alpine
-WORKDIR /hmclink/run/
+WORKDIR /hmclink/
+
+# Create run folder
+RUN cd /hmclink && mkdir run && cd run
 
 # Copy jars
 COPY --from=build /hmclink/build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
