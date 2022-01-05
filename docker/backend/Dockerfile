@@ -11,7 +11,7 @@ WORKDIR ~/hmclink
 RUN addgroup hmclink \
   && adduser -u 1000 -G hmclink -D -H backend \
   && apk -U upgrade \
-  && apk add git -y \
+  && apk add git \
   && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17-alpine as build
