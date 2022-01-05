@@ -18,8 +18,8 @@ FROM eclipse-temurin:17-alpine as build
 WORKDIR /
 
 # Build the jar
-RUN mkdir hmclink && cd hmclink && mkdir build
-COPY --from=prebuild /HMCLink build/HMCLink
+RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
+COPY --from=prebuild /HMCLink/* build/HMCLink/
 RUN cd HMCLink && ./gradlew clean build
 
 FROM eclipse-temurin:17-alpine
