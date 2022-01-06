@@ -20,15 +20,15 @@ COPY --from=prebuild /HMC-Link ./HMCLink/
 RUN cd HMCLink && chmod +x gradlew && ./gradlew :discord-bot:build
 
 FROM eclipse-temurin:17-alpine
-WORKDIR /
+WORKDIR /usr/discord/
 
 # Create run folder
 RUN mkdir run && cd run
 
 # Copy jars
-COPY --from=build /hmclink/build/HMCLink/backend/build/libs/discord-bot-*.*.*.jar backend.jar
+COPY --from=build /hmclink/build/HMCLink/backend/build/libs/discord-bot-*.*.*.jar discord.jar
 
-RUN adduser -u 1000 -G hmclink -D -H discord
+RUN adduser -u 1000 -D -H discord
 
 # Run jars
 USER discord

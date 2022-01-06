@@ -20,7 +20,7 @@ COPY --from=prebuild /HMC-Link ./HMCLink/
 RUN cd HMCLink && chmod +x gradlew && ./gradlew :backend:build
 
 FROM eclipse-temurin:17-alpine
-WORKDIR /
+WORKDIR /usr/backend/
 
 # Create run folder
 RUN mkdir run && cd run
@@ -28,7 +28,7 @@ RUN mkdir run && cd run
 # Copy jars
 COPY --from=build /hmclink/build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
 
-RUN adduser -u 1000 -G hmclink -D -H backend
+RUN adduser -u 1000 -D -H backend
 
 # Run jars
 USER backend
