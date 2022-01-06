@@ -1,23 +1,19 @@
 # To create an image for the docker-compose file, run
-# docker image build --label hmclink-discord .
+# docker image build --label hmclink-backend .
 # in this directory.
 
 ARG DISCORD_RAM
 
-FROM alpine as prebuild
-
-# Create user and group and install git
-RUN apk -U upgrade \
-  && apk add git \
-  && git clone https://github.com/HibiscusMC/HMC-Link.git
-
 FROM eclipse-temurin:17-alpine as build
 WORKDIR /
 
+# Get repository
+RUN  apk -U upgrade \
+  && apk add git \
+  && git clone https://github.com/HibiscusMC/HMC-Link.git
+
 # Build the jar
-RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
-COPY --from=prebuild /HMC-Link ./HMCLink/
-RUN cd HMCLink && chmod +x gradlew && ./gradlew :discord-bot:build
+RUN cd HMC-Link && chmod +x gradlew && ./gradlew :discord-bot:build
 
 FROM eclipse-temurin:17-alpine
 WORKDIR /usr/discord/
@@ -26,8 +22,9 @@ WORKDIR /usr/discord/
 RUN mkdir run && cd run
 
 # Copy jars
-COPY --from=build /hmclink/build/HMCLink/backend/build/libs/discord-bot-*.*.*.jar discord.jar
+COPY --from=build /HMC-Link/backend/build/libs/discord-bot-*.*.*.jar discord.jar
 
+# Add the user
 RUN adduser -u 1000 -D -H discord
 
 # Run jars
