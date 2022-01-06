@@ -3,6 +3,8 @@
 # in this directory.
 # To see the output for debugging, remove the -d (detach) option.
 
+version: '3.8'
+
 services:
   redis:
     image: 'redis'
