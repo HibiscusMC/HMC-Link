@@ -4,11 +4,13 @@
 
 ARG BACKEND_RAM
 
-FROM eclipse-temurin:17 as build
+FROM eclipse-temurin:17-alpine as build
 WORKDIR /
 
 # Get repository
-RUN git clone https://github.com/HibiscusMC/HMC-Link.git
+RUN  apk -U upgrade \
+  && apk add git \
+  && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 # Build the jar
 RUN cd HMC-Link && chmod +x gradlew && ./gradlew :backend:build
