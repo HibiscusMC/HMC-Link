@@ -22,7 +22,7 @@ WORKDIR /usr/discord/
 RUN mkdir run && cd run
 
 # Copy jars
-COPY --from=build /HMC-Link/backend/build/libs/discord-bot-*.*.*.jar discord.jar
+COPY --from=build /HMC-Link/discord-bot/build/libs/discord-bot-*.*.*.jar discord.jar
 
 # Add the user
 RUN adduser -u 1000 -D -H discord
