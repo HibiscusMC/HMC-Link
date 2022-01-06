@@ -20,7 +20,7 @@ COPY --from=prebuild /HMC-Link ./HMCLink/
 RUN cd HMCLink && chmod +x gradlew && ./gradlew :discord-bot:build
 
 FROM eclipse-temurin:17-alpine
-WORKDIR /hmclink/
+WORKDIR /
 
 # Create run folder
 RUN mkdir run && cd run
