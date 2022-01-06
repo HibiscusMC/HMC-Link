@@ -12,11 +12,12 @@ RUN apk -U upgrade \
   && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17-alpine as build
+WORKDIR /
 
 # Build the jar
 RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
 COPY --from=prebuild /HMC-Link ./HMCLink/
-RUN cd HMCLink && chmod +x gradlew && ./gradlew clean build
+RUN cd HMCLink && chmod +x gradlew && ./gradlew :discord-bot:build
 
 FROM eclipse-temurin:17-alpine
 WORKDIR /hmclink/
@@ -25,7 +26,7 @@ WORKDIR /hmclink/
 RUN mkdir run && cd run
 
 # Copy jars
-COPY --from=build /hmclink/build/HMCLink/backend/build/libs/backend-*.*.*.jar backend.jar
+COPY --from=build /hmclink/build/HMCLink/backend/build/libs/discord-bot-*.*.*.jar backend.jar
 
 RUN adduser -u 1000 -G hmclink -D -H discord
 

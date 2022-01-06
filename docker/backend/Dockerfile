@@ -12,11 +12,12 @@ RUN  apk -U upgrade \
   && git clone https://github.com/HibiscusMC/HMC-Link.git
 
 FROM eclipse-temurin:17-alpine as build
+WORKDIR /
 
 # Build the jar
 RUN mkdir hmclink && cd hmclink && mkdir build && cd build && mkdir HMCLink
 COPY --from=prebuild /HMC-Link ./HMCLink/
-RUN cd HMCLink && chmod +x gradlew && ./gradlew clean build
+RUN cd HMCLink && chmod +x gradlew && ./gradlew :backend:build
 
 FROM eclipse-temurin:17-alpine
 WORKDIR /hmclink/
