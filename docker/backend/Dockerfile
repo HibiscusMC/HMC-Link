@@ -1,12 +1,9 @@
 FROM eclipse-temurin:17-alpine as build
 WORKDIR /usr/source/
 
-RUN apk add git
-
-RUN git clone https://github.com/HibiscusMC/HMC-Link.git .
-
-# Build the jar
-RUN chmod +x gradlew && ./gradlew :backend:build --no-daemon
+RUN apk add git --no-cache && \
+    git clone https://github.com/HibiscusMC/HMC-Link.git . && \
+    chmod +x gradlew && ./gradlew :backend:build --no-daemon
 
 FROM eclipse-temurin:17-alpine
 WORKDIR /usr/backend/

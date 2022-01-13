@@ -32,7 +32,7 @@ class UserCacheUpdater(
 
     private fun task() {
         userCache.forEach { player, data ->
-            if (data.added + (1000 * 60 * config.getInt("updater.user-cache", 5)) <= System.currentTimeMillis()) {
+            if (data.added + 1000 * 60 * config.getInt("updater.user-cache", 5) <= System.currentTimeMillis()) {
                 messageHandler.pubSubHelper.publish(
                     Channels.STANDARD,
                     LinkedUserRequestMessage(ServiceType.MINECRAFT_PLUGIN, ServiceType.BACKEND, listOf(player))

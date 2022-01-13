@@ -32,7 +32,7 @@ class VoiceCacheUpdater(
 
     private fun task() {
         voiceCache.forEach { player, data ->
-            if (data.added + (1000 * 60 * config.getInt("updater.voice-cache", 20)) <= System.currentTimeMillis()) {
+            if (data.added + 1000 * 60 * config.getInt("updater.voice-cache", 20) <= System.currentTimeMillis()) {
                 messageHandler.pubSubHelper.publish(
                     Channels.STANDARD,
                     LinkedUserRequestMessage(ServiceType.MINECRAFT_PLUGIN, ServiceType.BACKEND, listOf(player))
